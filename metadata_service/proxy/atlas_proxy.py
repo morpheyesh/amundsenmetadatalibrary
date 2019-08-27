@@ -334,7 +334,7 @@ class AtlasProxy(BaseProxy):
         return column_detail[self.ATTRS_KEY].get('description')
 
     @_CACHE.cache('_get_metadata_collection', _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
-    def _get_metadata_collection(self, dsl_param: dict):
+    def _get_metadata_collection(self, dsl_param: dict) -> List:
         try:
             # Fetch the metadata entities based on popularity score
             metadata_ids = self._get_flat_values_from_dsl(dsl_param=dsl_param)
