@@ -342,9 +342,6 @@ class AtlasProxy(BaseProxy):
             metadata_ids = self._get_flat_values_from_dsl(dsl_param=dsl_param)
             metadata_collection = self._driver.entity_bulk(guid=metadata_ids)
 
-            if not metadata_collection:
-                raise NotFoundException('Unable to fetch popular tables. '
-                                        'Please check your configurations.')
             metadata_entities = list()
             for _collection in metadata_collection:
                 for entity in _collection.entities_with_relationships(attributes=["parentEntity"]):
@@ -356,6 +353,11 @@ class AtlasProxy(BaseProxy):
             LOGGER.exception(f'DSL Search query failed: {ex}')
             raise BadRequest('Unable to fetch popular tables. '
                              'Please check your configurations.')
+
+        except TypeError as ex:
+            LOGGER.exception(f'DSL Search query failed: {ex}')
+            raise NotFoundException('Unable to fetch popular tables. '
+                                    'Please check your configurations.')
 
     def get_popular_tables(self, *, num_entries: int) -> List[PopularTable]:
         """
