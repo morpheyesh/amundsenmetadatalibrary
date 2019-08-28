@@ -22,11 +22,11 @@ from metadata_service.util import UserResourceRel
 LOGGER = logging.getLogger(__name__)
 
 # Expire cache every 11 hours + jitter
-_GET_POPULAR_TABLE_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
+_ATLAS_PROXY_CACHE_EXPIRY_SEC = 11 * 60 * 60 + randint(0, 3600)
 
 _CACHE = CacheManager(**parse_cache_config_options({'cache.regions': 'atlas_proxy',
                                                     'cache.atlas_proxy.type': 'memory',
-                                                    'cache.atlas_proxy.expire': _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC}))
+                                                    'cache.atlas_proxy.expire': _ATLAS_PROXY_CACHE_EXPIRY_SEC}))
 
 
 # noinspection PyMethodMayBeStatic
@@ -335,7 +335,7 @@ class AtlasProxy(BaseProxy):
             column_name=column_name)
         return column_detail[self.ATTRS_KEY].get('description')
 
-    @_CACHE.region('atlas_proxy', '_get_metadata_entities', _GET_POPULAR_TABLE_CACHE_EXPIRY_SEC)
+    @_CACHE.region('atlas_proxy', '_get_metadata_entities')
     def _get_metadata_entities(self, dsl_param: dict) -> List:
         try:
             # Fetch the metadata entities based on popularity score
