@@ -110,14 +110,18 @@ class AtlasProxy(BaseProxy):
         name: Table name
         """
         pattern = re.compile(r"""
-            ^   (?P<entity>.*?)
-            :\/\/
-                (?P<cluster>.*)
-            \.
-                (?P<db>.*?)
-            \/
-                (?P<name>.*?)
-            $
+           ^ (?P<db>.*)  
+           \. 
+           (?P<table>.*)  
+           \.
+           (?P<metadata>.*)  
+           \.
+           (?P<user>.*?) 
+           \.
+           (?P<reader>.*?) 
+           \@
+           (?P<cluster>.*?)
+           $
         """, re.X)
         result = pattern.match(reader_qn)
         return result.groupdict() if result else dict()
@@ -463,13 +467,13 @@ class AtlasProxy(BaseProxy):
 
     def get_table_by_user_relation(self, *, user_email: str,
                                    relation_type: UserResourceRel) -> Dict[str, Any]:
-        params = {'typeName': 'Reader', 'offset': '1', 'limit': '50',
+        params = {'typeName': 'Reader', 'offset': '0', 'limit': '50',
                   'entityFilters': {
                       "condition": 'AND',
                       'criterion': [
                           {'attributeName': 'qualifiedName',
                            'operator': 'contains',
-                           'attributeValue': 'OMMK70'
+                           'attributeValue': user_email
                            },
                           {'attributeName': 'isFollowing',
                            'operator': 'eq',
@@ -481,8 +485,6 @@ class AtlasProxy(BaseProxy):
                   }
 
         search_results = self.driver.search_basic.create(data=params)
-        for e in search_results.entities:
-            print(e.displayText)
 
         results = []
         for record in search_results.entities:
@@ -491,10 +493,8 @@ class AtlasProxy(BaseProxy):
                 database=res['db'],
                 cluster=res['cluster'],
                 schema='',
-                name=res['name']))
+                name=res['table']))
         return {'table': results}
-
-
 
     def get_frequently_used_tables(self, *, user_email: str) -> Dict[str, Any]:
         pass
