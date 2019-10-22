@@ -50,6 +50,13 @@ class TestAtlasProxy(unittest.TestCase, Data):
         }))
         return mocked_entity
 
+    def _mock_get_reader_entity(self, entity=None):
+        entity = entity or self.entity1
+        mocked_entity = MagicMock()
+        self._get_reader_entity = MagicMock(return_value=mocked_entity)
+        return mocked_entity
+
+
     def test_extract_table_uri_info(self):
         table_info = self.proxy._extract_info_from_uri(table_uri=self.table_uri)
         self.assertDictEqual(table_info, {
@@ -332,6 +339,18 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy.put_column_description(table_uri=self.table_uri,
                                           column_name=self.test_column['attributes']['name'],
                                           description='DOESNT_MATTER')
+
+    def test_add_resource_relation_by_user(self):
+        self._mock_get_reader_entity()
+        self.proxy.add_table_relation_by_user(table_uri=self.table_uri,
+                                              user_email="test_user_id",
+                                              relation_type='follow')
+
+    def test_delete_resource_relation_by_user(self):
+        self._mock_get_reader_entity()
+        self.proxy.delete_table_relation_by_user(table_uri=self.table_uri,
+                                                 user_email="test_user_id",
+                                                 relation_type='follow')
 
 
 if __name__ == '__main__':
