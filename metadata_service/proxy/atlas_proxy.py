@@ -463,8 +463,6 @@ class AtlasProxy(BaseProxy):
                 )
         return tags
 
-
-
     def get_table_by_user_relation(self, *, user_email: str,
                                    relation_type: UserResourceRel) -> Dict[str, Any]:
         params = {'typeName': 'Reader', 'offset': '0', 'limit': '50',
@@ -482,9 +480,9 @@ class AtlasProxy(BaseProxy):
                       ]
                   },
                   'attributes': ['count', 'qualifiedName']
-                  }
+        }
 
-        search_results = self.driver.search_basic.create(data=params)
+        search_results = self._driver.search_basic.create(data=params)
 
         results = []
         for record in search_results.entities:
@@ -505,7 +503,7 @@ class AtlasProxy(BaseProxy):
                                    relation_type: UserResourceRel) -> None:
         entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY]['isFollowing'] = True
-        entity.update(attribute='isFollowing')
+        entity.update()
 
     def delete_table_relation_by_user(self, *,
                                       table_uri: str,
@@ -513,4 +511,4 @@ class AtlasProxy(BaseProxy):
                                       relation_type: UserResourceRel) -> None:
         entity = self._get_reader_entity(table_uri=table_uri, user_id=user_email)
         entity.entity[self.ATTRS_KEY]['isFollowing'] = False
-        entity.update(attribute='isFollowing')
+        entity.update()
