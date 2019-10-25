@@ -56,7 +56,6 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self._get_reader_entity = MagicMock(return_value=mocked_entity)
         return mocked_entity
 
-
     def test_extract_table_uri_info(self):
         table_info = self.proxy._extract_info_from_uri(table_uri=self.table_uri)
         self.assertDictEqual(table_info, {
@@ -351,8 +350,6 @@ class TestAtlasProxy(unittest.TestCase, Data):
         self.proxy.delete_table_relation_by_user(table_uri=self.table_uri,
                                                  user_email="test_user_id",
                                                  relation_type='follow')
-
-
 
 
 if __name__ == '__main__':
