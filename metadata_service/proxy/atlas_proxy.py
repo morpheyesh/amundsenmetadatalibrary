@@ -100,7 +100,7 @@ class AtlasProxy(BaseProxy):
         result = pattern.match(table_uri)
         return result.groupdict() if result else dict()
 
-    def _parse_reader_qn(self, reader_qn: str):
+    def _parse_reader_qn(self, reader_qn: str) -> Dict:
         """
         Parse reader qualifiedName and extract the info
         :param reader_qn:
