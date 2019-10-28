@@ -53,7 +53,8 @@ class TestAtlasProxy(unittest.TestCase, Data):
     def _mock_get_reader_entity(self, entity=None):
         entity = entity or self.entity1
         mocked_entity = MagicMock()
-        self._get_reader_entity = MagicMock(return_value=mocked_entity)
+        mocked_entity.entity = entity
+        self.proxy._get_reader_entity = MagicMock(return_value=mocked_entity)
         return mocked_entity
 
     def test_extract_table_uri_info(self):
@@ -340,16 +341,20 @@ class TestAtlasProxy(unittest.TestCase, Data):
                                           description='DOESNT_MATTER')
 
     def test_add_resource_relation_by_user(self):
-        self._mock_get_reader_entity()
-        self.proxy.add_table_relation_by_user(table_uri=self.table_uri,
-                                              user_email="test_user_id",
-                                              relation_type='follow')
+        reader_entity = self._mock_get_reader_entity()
+        with patch.object(reader_entity, 'update') as mock_execute:
+            self.proxy.add_table_relation_by_user(table_uri=self.table_uri,
+                                                  user_email="test_user_id",
+                                                  relation_type='follow')
+            mock_execute.assert_called_with()
 
     def test_delete_resource_relation_by_user(self):
-        self._mock_get_reader_entity()
-        self.proxy.delete_table_relation_by_user(table_uri=self.table_uri,
-                                                 user_email="test_user_id",
-                                                 relation_type='follow')
+        reader_entity = self._mock_get_reader_entity()
+        with patch.object(reader_entity, 'update') as mock_execute:
+            self.proxy.delete_table_relation_by_user(table_uri=self.table_uri,
+                                                     user_email="test_user_id",
+                                                     relation_type='follow')
+            mock_execute.assert_called_with()
 
 
 if __name__ == '__main__':
