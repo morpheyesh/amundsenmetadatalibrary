@@ -110,18 +110,14 @@ class AtlasProxy(BaseProxy):
         name: Table name
         """
         pattern = re.compile(r"""
-            ^(?P<db>.*)
-            \.
-             (?P<table>.*)
-            \.
-             (?P<metadata>.*)
-            \.
-             (?P<user>.*?)
-            \.
-             (?P<reader>.*?)
-            \@
-             (?P<cluster>.*?)
-            $
+        ^(?P<db>[^.]*)
+        \.
+        (?P<table>[^.]*)\.metadata
+        \.
+        (?P<user_id>[^.]*)\.reader
+        \@
+        (?P<cluster>.*)
+        $
         """, re.X)
         result = pattern.match(reader_qn)
         return result.groupdict() if result else dict()
