@@ -172,7 +172,7 @@ class AtlasProxy(BaseProxy):
         :return:
         """
         reader_entity = {
-            'typeName': 'Reader',
+            'typeName': self.READER_TYPE,
             'attributes': {'qualifiedName': reader_qn,
                            'isFollowing': True,
                            'count': 0,
@@ -197,7 +197,7 @@ class AtlasProxy(BaseProxy):
 
         try:
             reader_entity = self._driver.entity_unique_attribute(
-                "Reader", qualifiedName=reader_qn)
+                self.READER_TYPE, qualifiedName=reader_qn)
             if not reader_entity.entity:
                 # Fetch the table entity from the uri for obtaining metadata guid.
                 table_entity, table_info = self._get_table_entity(table_uri=table_uri)
@@ -477,7 +477,7 @@ class AtlasProxy(BaseProxy):
             db_cluster = table_qn.get("cluster_name", '')
 
             popular_table = PopularTable(
-                database=table.typeName,
+                database=self.TABLE_ENTITY,  # FixMe (Yesh) Changed this to supertype. Until defs are finalized in atlas
                 cluster=db_cluster,
                 schema=db_name,
                 name=table_name,
@@ -509,7 +509,7 @@ class AtlasProxy(BaseProxy):
 
     def get_table_by_user_relation(self, *, user_email: str, relation_type: UserResourceRel) -> Dict[str, Any]:
         params = {
-            'typeName': 'Reader',
+            'typeName': self.READER_TYPE,
             'offset': '0',
             'limit': '1000',  # Fixme (yesh) Pagination needs to be implemented.
             'entityFilters': {
@@ -534,9 +534,9 @@ class AtlasProxy(BaseProxy):
 
         results = []
         for record in search_results.entities:
-            res = self._parse_reader_qn(record.displayText)
+            res = self._parse_reader_qn(record.attributes[self.QN_KEY])
             results.append(PopularTable(
-                database='hive_table',
+                database=self.TABLE_ENTITY,  # Fixme (yesh) Hardcoded because no table type info in reader.
                 cluster=res['cluster'],
                 schema=res['db'],
                 name=res['table']))

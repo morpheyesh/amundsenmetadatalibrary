@@ -180,9 +180,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
             ent2_attrs = self.entity2['attributes']
 
             expected = [
-                PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                PopularTable(database='Table', cluster=self.cluster, schema=self.db,
                              name=ent1_attrs['name'], description=ent1_attrs['description']),
-                PopularTable(database=self.entity_type, cluster=self.cluster, schema=self.db,
+                PopularTable(database='Table', cluster=self.cluster, schema=self.db,
                              name=ent2_attrs['name'], description=ent1_attrs['description']),
             ]
 
@@ -240,9 +240,9 @@ class TestAtlasProxy(unittest.TestCase, Data):
             ent2_attrs = self.entity2['attributes']
 
             expected = [
-                PopularTable(database=self.entity_type, cluster='default', schema='default',
+                PopularTable(database='Table', cluster='default', schema='default',
                              name=ent1_attrs['name'], description=ent1_attrs['description']),
-                PopularTable(database=self.entity_type, cluster='default', schema='default',
+                PopularTable(database='Table', cluster='default', schema='default',
                              name=ent2_attrs['name'], description=ent1_attrs['description']),
             ]
 
@@ -351,7 +351,7 @@ class TestAtlasProxy(unittest.TestCase, Data):
         res = self.proxy.get_table_by_user_relation(user_email='test_user_id',
                                                     relation_type='follow')
 
-        expected = [PopularTable(database='hive_table', cluster=Data.cluster, schema=Data.db,
+        expected = [PopularTable(database='Table', cluster=Data.cluster, schema=Data.db,
                                  name='Table1', description=None)]
 
         self.assertEqual(res, {'table': expected})
